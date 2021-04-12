@@ -1,0 +1,123 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description"><title>git-flow工作规范 | Abel-Johnson's BLOG</title><link rel="stylesheet" type="text/css" href="/blog/css/style.css?v=1.0.0"><link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/normalize.css/normalize.min.css"><link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/purecss/build/pure-min.min.css"><link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/purecss/build/grids-responsive-min.css"><link rel="stylesheet" href="//cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//cdn.jsdelivr.net/npm/jquery/dist/jquery.min.js"></script><link rel="icon" mask="" sizes="any" href="/blog/favicon.ico"><link rel="Shortcut Icon" type="image/x-icon" href="/blog/favicon.ico"><link rel="apple-touch-icon" href="/blog/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/blog/apple-touch-icon.png"><script type="text/javascript" src="//cdn.jsdelivr.net/npm/clipboard/dist/clipboard.min.js"></script><script type="text/javascript" src="//cdn.jsdelivr.net/gh/codeseven/toastr/build/toastr.min.js"></script><link rel="stylesheet" href="//cdn.jsdelivr.net/gh/codeseven/toastr/build/toastr.min.css"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">git-flow工作规范</h1><a id="logo" href="/blog/.">Abel-Johnson's BLOG</a><p class="description"></p></div><div id="nav-menu"><a class="current" href="/blog/."><i class="fa fa-home"> 首页</i></a><a href="/blog/archives/"><i class="fa fa-archive"> 归档</i></a><a href="/blog/about/"><i class="fa fa-user"> 关于</i></a><a href="/blog/atom.xml"><i class="fa fa-rss"> 订阅</i></a></div></div><div class="pure-g" id="layout"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">git-flow工作规范</h1><div class="post-meta">2018-02-28</div><div class="post-content"><h2><span id="一种的经典分支管理规范">一种的经典分支管理规范</span></h2><p><img src="https://upload-images.jianshu.io/upload_images/2062729-93aa9d75f0552a47.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/700" alt=""></p>
+<p>如上图所示：</p>
+<ol>
+<li><p>最稳定的代码放在 master 分支上（相当于 SVN 的 trunk 分支），我们不要直接在 master 分支上提交代码，只能在该分支上进行代码合并操作，例如将其它分支的代码合并到 master 分支上。</p>
+</li>
+<li><p>我们 日常开发中的代码需要从 master 分支拉一条 develop 分支出来，该分支所有人都能访问，但一般情况下，我们也不会直接在该分支上提交代码，代码同样是从其它分支合并到 develop 分支上去。</p>
+</li>
+<li><p>当我们需要开发某个特性时，需要从 develop 分支拉出一条 feature 分支，例如 feature-1 与 feature-2，在这些分支上并行地开发具体特性。</p>
+</li>
+<li><p>当特性开发完毕后，我们决定需要发布某个版本了，此时需要从 develop 分支上拉出一条 release 分支，例如 release-1.0.0，并将需要发布的特性从相关 feature 分支一同合并到 release 分支上，随后将针对 release 分支部署测试环境，测试工程师在该分支上做功能测试，开发工程师在该分支上修改 bug。</p>
+</li>
+<li><p>待测试工程师无法找到任何 bug 时，我们可将该 release 分支部署到预发环境，再次验证以后，均无任何 bug，此时可将 release 分支部署到生产环境。</p>
+</li>
+<li><p>待上线完成后，将 release 分支上的代码同时合并到 develop 分支与 master 分支，并在 master 分支上打一个 tag，例如 v1.0.0。</p>
+</li>
+<li><p>当生产环境发现 bug 时，我们 需要从对应的 tag 上（例如 v1.0.0）拉出一条 hotfix 分支（例如 hotfix-1.0.1），并在该分支上做 bug 修复。待 bug 完全修复后，需将 hotfix 分支上的代码同时合并到 develop 分支与 master 分支。</p>
+</li>
+</ol>
+<p>对于版本号我们也有要求，格式为：<code>x.y.z</code>，<br>其中，</p>
+<ol>
+<li>x 用于有重大重构时才会升级，</li>
+<li>y 用于有新的特性发布时才会升级，</li>
+<li>z 用于修改了某个 bug 后才会升级。</li>
+</ol>
+<p>针对每个微服务，我们都需要严格按照以上开发模式来执行。</p>
+<blockquote>
+<p>与Git Flow模型分支管理的区别点：</p>
+<p>feature分支开发完成后，暂时不合并至develop，而是基于develop开启release分支，将feature分支合并到release分支，进行测试；</p>
+<p>release分支测试通过后，部署到生产环境，将release分支代码合并到develop分支与master分支，并在master分支打一个tag；</p>
+</blockquote>
+<h2><span id="git-flow">Git Flow</span></h2><blockquote>
+<p>git branch 功能很强大，但是没有一套模型告诉我们应该怎样在开发的时候善用这些分支。而Git Flow模型就是要告诉我们怎么更好地使用Git分支。</p>
+</blockquote>
+<p><img src="https://upload-images.jianshu.io/upload_images/2062729-b22e35babaac5210.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/700" alt=""></p>
+<p>主要分支</p>
+<blockquote>
+<p>master: 永远处在即将发布(production-ready)状态；</p>
+<p>develop: 最新的开发状态；</p>
+</blockquote>
+<p>辅助分支</p>
+<blockquote>
+<p>feature: 开发新功能的分支, 基于 develop, 完成后 merge 回 develop；</p>
+<p>release: 准备要发布版本的分支, 用来修复 bug. 基于 develop, 完成后 merge 回 develop 和 master；</p>
+<p>hotfix: 修复 master 上的问题, 等不及 release 版本就必须马上上线. 基于 master, 完成后 merge 回 master 和 develop；</p>
+</blockquote>
+<h3><span id="git-flow使用">Git Flow使用</span></h3><ol>
+<li>Git Flow安装构建<br>安装 git-flow：</li>
+</ol>
+<p>➜ brew install git-flow<br>作者还提供了 git-flow 命令工具，在一个全新目录下构建 git-flow 模型：</p>
+<blockquote>
+<p>➜ git flow init<br>接着它会问你一系列的问题，蛋定！尽量使用它的默认值就好了：</p>
+<p>No branches exist yet. Base branches must be created now.<br>Branch name for production releases: [master]<br>Branch name for “next release” development: [develop]<br>How to name your supporting branch prefixes?<br>Feature branches? [feature/]<br>Release branches? [release/]<br>Hotfix branches? [hotfix/]<br>Support branches? [support/]<br>Version tag prefix? []</p>
+</blockquote>
+<p>或者在现有的版本库构建：</p>
+<blockquote>
+<p>➜ git flow init<br>Which branch should be used for bringing forth production releases?</p>
+<ul>
+<li>master<br>Branch name for production releases: [master]<br>Branch name for “next release” development: [develop]</li>
+</ul>
+<p>How to name your supporting branch prefixes?<br>Feature branches? [feature/]<br>Release branches? [release/]<br>Hotfix branches? [hotfix/]<br>Support branches? [support/]<br>Version tag prefix? []</p>
+</blockquote>
+<p>这样一个 git-flow 分支模型就初始化完成。</p>
+<ol>
+<li>几个常见场景</li>
+</ol>
+<h4><span id="场景1新功能开发代号-f1">场景1：新功能开发，代号 f1</span></h4><p>基于develop，开启新功能分支开发</p>
+<p>完成前面构建操作，当前所在分支就变成 develop. 任何开发都必须从 develop 开始：</p>
+<p>➜ git flow feature start f1<br>git-flow 从 develop 分支创建了一个新的分支 feature/f1，并自动切换到这个分支下面。然后就可以进行 f1 功能开发，中间可以多次的 commit 操作。</p>
+<p>将一个 f1 分支推到远程服务器，与其他开发人员协同开发：</p>
+<p>➜ git flow feature publish f1</p>
+<p>或者</p>
+<p>➜ git push origin feature/f1<br>完成功能开发，结束新功能分支并删除：</p>
+<p>➜ git flow feature finish f1<br>feature/f1 分支的代码会被合并到 develop 里面，然后删除该分支，切换回 develop. 到此，新功能开发这个场景完毕。在 f1 功能开发中，如果 f1 未完成，同时功能 f2 要开始进行，也是可以的。</p>
+<h4><span id="场景2发布上线代号-01">场景2：发布上线，代号 0.1</span></h4><p>基于develop，开发发布分支</p>
+<p>➜ git flow release start 0.1<br>Switched to a new branch ‘release/0.1’</p>
+<p>Summary of actions:</p>
+<ul>
+<li>A new branch ‘release/0.1’ was created, based on ‘develop’</li>
+<li>You are now on branch ‘release/0.1’</li>
+</ul>
+<p>Follow-up actions:</p>
+<ul>
+<li>Bump the version number now!</li>
+<li>Start committing last-minute fixes in preparing your release</li>
+<li>When done, run:</li>
+</ul>
+<p>git flow release finish ‘0.1’<br>git-flow 从 develop 分支创建一个新的分支 release/0.1，并切换到该分支下，接下来要做的就是修改版本号等发布操作。完成后：</p>
+<p>➜ git flow release finish 0.1<br>Switched to branch ‘master’<br>Merge made by the ‘recursive’ strategy.<br> f1      |    1 +<br> version |    1 +<br> 2 files changed, 2 insertions(+)<br> create mode 100644 f1<br> create mode 100644 version<br>Switched to branch ‘develop’<br>Merge made by the ‘recursive’ strategy.<br> version |    1 +<br> 1 file changed, 1 insertion(+)<br> create mode 100644 version<br>Deleted branch release/0.1 (was d77df80).</p>
+<p>Summary of actions:</p>
+<ul>
+<li>Latest objects have been fetched from ‘origin’</li>
+<li>Release branch has been merged into ‘master’</li>
+<li>The release was tagged ‘0.1’</li>
+<li>Release branch has been back-merged into ‘develop’</li>
+<li>Release branch ‘release/0.1’ has been deleted<br>git-flow 会依次切换到 master develop 下合并 release/0.1 里的修改，然后用 git tag 的给当次发布打上 tag 0.1，可以通过 git tag 查看所有 tag：</li>
+</ul>
+<p>➜ git:(master) git tag<br>0.1<br>0.2</p>
+<h4><span id="场景3紧急-bug-修正代号-bug1">场景3：紧急 bug 修正，代号 bug1</span></h4><p>基于master，开启热修复分支</p>
+<p>➜ git flow hotfix start bug1<br>Switched to a new branch ‘hotfix/bug1’</p>
+<p>Summary of actions:</p>
+<ul>
+<li>A new branch ‘hotfix/bug1’ was created, based on ‘master’</li>
+<li>You are now on branch ‘hotfix/bug1’</li>
+</ul>
+<p>Follow-up actions:</p>
+<ul>
+<li>Bump the version number now!</li>
+<li>Start committing your hot fixes</li>
+<li>When done, run:</li>
+</ul>
+<p>git flow hotfix finish ‘bug1’<br>git-flow 从 master 分支创建一个新的分支 hotfix/bug1，并切换到该分支下。接下来要做的就是修复 bug，完成后：</p>
+<p>➜ git flow hotfix finish bug1<br>Switched to branch ‘master’<br>Merge made by the ‘recursive’ strategy.<br> f1 |    2 +-<br> 1 file changed, 1 insertion(+), 1 deletion(-)<br>Switched to branch ‘develop’<br>Merge made by the ‘recursive’ strategy.<br> f1 |    2 +-<br> 1 file changed, 1 insertion(+), 1 deletion(-)<br>Deleted branch hotfix/bug1 (was aa3ca2e).</p>
+<p>Summary of actions:</p>
+<ul>
+<li>Latest objects have been fetched from ‘origin’</li>
+<li>Hotfix branch has been merged into ‘master’</li>
+<li>The hotfix was tagged ‘bug1’</li>
+<li>Hotfix branch has been back-merged into ‘develop’</li>
+<li>Hotfix branch ‘hotfix/bug1’ has been deleted<br>git-flow 会依次切换到 master develop 分支下合并 hotfix/bug1，然后删掉 hotfix/bug1。到此，hotfix 完成。</li>
+</ul>
+<p>git-flow 的 feature release 都是从 develop 分支创建，hotfix support 都是从 master 分支创建。</p>
+<p>讨论了一个情况, 两个版本release, release1合并到master上, 发布后发现了一个bug, 需要hotfix, 修复完以后, 合到master和develop, 此时的master是已经完好无bug的, 但是release2是有bug的, 此时发布release2就会有冲突,<br>此时的处理方式是: 撤销release2, 把完好的master合并到develop, 处理冲突后重新发一个release, 走流程, 最后发版</p>
+</div><div class="tags"><a href="/blog/tags/Git/"><i class="fa fa-tag"></i>Git</a></div><div class="post-nav"><a class="pre" href="/blog/2019/02/03/[个人成长]SML/">SML</a><a class="next" href="/blog/2018/02/23/卡西欧手表调日期正确方法/">卡西欧手表调日期正确方法</a></div></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><form class="search-form" action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank"><input type="text" name="q" maxlength="20" placeholder="Search"/><input type="hidden" name="sitesearch" value="https://aj1219.github.io/blog"/></form></div><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> 分类</i></div></div><div class="widget"><div class="widget-title"><i class="fa fa-star-o"> 标签</i></div><div class="tagcloud"><a href="/blog/tags/Node/" style="font-size: 15px;">Node</a> <a href="/blog/tags/DOM/" style="font-size: 15px;">DOM</a> <a href="/blog/tags/JavaScript/" style="font-size: 15px;">JavaScript</a> <a href="/blog/tags/前端/" style="font-size: 15px;">前端</a> <a href="/blog/tags/模块化/" style="font-size: 15px;">模块化</a> <a href="/blog/tags/JQuery/" style="font-size: 15px;">JQuery</a> <a href="/blog/tags/Linux/" style="font-size: 15px;">Linux</a> <a href="/blog/tags/Go/" style="font-size: 15px;">Go</a> <a href="/blog/tags/Git/" style="font-size: 15px;">Git</a> <a href="/blog/tags/Nginx/" style="font-size: 15px;">Nginx</a> <a href="/blog/tags/TCP/" style="font-size: 15px;">TCP</a> <a href="/blog/tags/个人成长/" style="font-size: 15px;">个人成长</a> <a href="/blog/tags/面试/" style="font-size: 15px;">面试</a> <a href="/blog/tags/Aha/" style="font-size: 15px;">Aha</a> <a href="/blog/tags/CSS3/" style="font-size: 15px;">CSS3</a> <a href="/blog/tags/技术参考/" style="font-size: 15px;">技术参考</a> <a href="/blog/tags/管理/" style="font-size: 15px;">管理</a> <a href="/blog/tags/go/" style="font-size: 15px;">go</a> <a href="/blog/tags/编程作业/" style="font-size: 15px;">编程作业</a> <a href="/blog/tags/电子书/" style="font-size: 15px;">电子书</a> <a href="/blog/tags/Hexo/" style="font-size: 15px;">Hexo</a> <a href="/blog/tags/https/" style="font-size: 15px;">https</a> <a href="/blog/tags/CSS/" style="font-size: 15px;">CSS</a> <a href="/blog/tags/HTML/" style="font-size: 15px;">HTML</a> <a href="/blog/tags/React/" style="font-size: 15px;">React</a> <a href="/blog/tags/SSH/" style="font-size: 15px;">SSH</a> <a href="/blog/tags/shell/" style="font-size: 15px;">shell</a> <a href="/blog/tags/Unix/" style="font-size: 15px;">Unix</a> <a href="/blog/tags/Vim/" style="font-size: 15px;">Vim</a> <a href="/blog/tags/计算机基础知识/" style="font-size: 15px;">计算机基础知识</a> <a href="/blog/tags/markdown/" style="font-size: 15px;">markdown</a> <a href="/blog/tags/心理学/" style="font-size: 15px;">心理学</a> <a href="/blog/tags/网络/" style="font-size: 15px;">网络</a> <a href="/blog/tags/坑/" style="font-size: 15px;">坑</a> <a href="/blog/tags/Mac/" style="font-size: 15px;">Mac</a> <a href="/blog/tags/Apache/" style="font-size: 15px;">Apache</a> <a href="/blog/tags/生活/" style="font-size: 15px;">生活</a> <a href="/blog/tags/小程序/" style="font-size: 15px;">小程序</a> <a href="/blog/tags/微信小程序/" style="font-size: 15px;">微信小程序</a> <a href="/blog/tags/兼容性/" style="font-size: 15px;">兼容性</a> <a href="/blog/tags/DNS/" style="font-size: 15px;">DNS</a> <a href="/blog/tags/Ping/" style="font-size: 15px;">Ping</a> <a href="/blog/tags/逻辑/" style="font-size: 15px;">逻辑</a> <a href="/blog/tags/读书笔记/" style="font-size: 15px;">读书笔记</a> <a href="/blog/tags/redux/" style="font-size: 15px;">redux</a> <a href="/blog/tags/代码规范/" style="font-size: 15px;">代码规范</a> <a href="/blog/tags/webpack3/" style="font-size: 15px;">webpack3</a></div></div><div class="widget"><div class="widget-title"><i class="fa fa-file-o"> 最近文章</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/blog/2021/04/09/物理像素、逻辑像素、CSS像素、PPI、设备像素比是什么/">物理像素、逻辑像素、CSS像素、PPI、设备像素比是什么</a></li><li class="post-list-item"><a class="post-list-link" href="/blog/2020/04/08/重新定义管理/">重新定义管理</a></li><li class="post-list-item"><a class="post-list-link" href="/blog/2020/03/18/OKR黄勇笔记笔记/">OKR黄勇笔记笔记</a></li><li class="post-list-item"><a class="post-list-link" href="/blog/2020/03/18/自定义角色感/">自定义角色感</a></li><li class="post-list-item"><a class="post-list-link" href="/blog/2020/01/06/hello-Hexo/">Hello Hexo</a></li><li class="post-list-item"><a class="post-list-link" href="/blog/2019/12/25/Linux入门/">Linux入门</a></li><li class="post-list-item"><a class="post-list-link" href="/blog/2019/12/25/Nginx入门/">Nginx入门</a></li><li class="post-list-item"><a class="post-list-link" href="/blog/2019/11/13/GO第二课/">GO第二课</a></li><li class="post-list-item"><a class="post-list-link" href="/blog/2019/11/12/GO第一课/">GO第一课</a></li><li class="post-list-item"><a class="post-list-link" href="/blog/2019/09/10/gitbook导出电子书/">gitbook导出电子书</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-external-link"> 友情链接</i></div><ul></ul><a href="http://www.example1.com/" title="site-name1" target="_blank">site-name1</a><ul></ul><a href="http://www.example2.com/" title="site-name2" target="_blank">site-name2</a><ul></ul><a href="http://www.example3.com/" title="site-name3" target="_blank">site-name3</a></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2021 <a href="/blog/." rel="nofollow">Abel-Johnson's BLOG.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"> Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></div><a class="show" id="rocket" href="#top"></a><script type="text/javascript" src="/blog/js/totop.js?v=1.0.0" async></script><script type="text/javascript" src="//cdn.jsdelivr.net/gh/fancyapps/fancybox/dist/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/blog/js/fancybox.js?v=1.0.0" async></script><link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox/dist/jquery.fancybox.min.css"><script type="text/javascript" src="/js/copycode.js" successtext="复制成功!"></script><link rel="stylesheet" type="text/css" href="/css/copycode.css"><script type="text/javascript" src="/blog/js/codeblock-resizer.js?v=1.0.0"></script><script type="text/javascript" src="/blog/js/smartresize.js?v=1.0.0"></script></div></body></html>

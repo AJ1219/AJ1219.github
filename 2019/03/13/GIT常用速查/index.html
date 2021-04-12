@@ -1,0 +1,265 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description"><title>GIT常用速查 | Abel-Johnson's BLOG</title><link rel="stylesheet" type="text/css" href="/blog/css/style.css?v=1.0.0"><link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/normalize.css/normalize.min.css"><link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/purecss/build/pure-min.min.css"><link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/purecss/build/grids-responsive-min.css"><link rel="stylesheet" href="//cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//cdn.jsdelivr.net/npm/jquery/dist/jquery.min.js"></script><link rel="icon" mask="" sizes="any" href="/blog/favicon.ico"><link rel="Shortcut Icon" type="image/x-icon" href="/blog/favicon.ico"><link rel="apple-touch-icon" href="/blog/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/blog/apple-touch-icon.png"><script type="text/javascript" src="//cdn.jsdelivr.net/npm/clipboard/dist/clipboard.min.js"></script><script type="text/javascript" src="//cdn.jsdelivr.net/gh/codeseven/toastr/build/toastr.min.js"></script><link rel="stylesheet" href="//cdn.jsdelivr.net/gh/codeseven/toastr/build/toastr.min.css"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">GIT常用速查</h1><a id="logo" href="/blog/.">Abel-Johnson's BLOG</a><p class="description"></p></div><div id="nav-menu"><a class="current" href="/blog/."><i class="fa fa-home"> 首页</i></a><a href="/blog/archives/"><i class="fa fa-archive"> 归档</i></a><a href="/blog/about/"><i class="fa fa-user"> 关于</i></a><a href="/blog/atom.xml"><i class="fa fa-rss"> 订阅</i></a></div></div><div class="pure-g" id="layout"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">GIT常用速查</h1><div class="post-meta">2019-03-13</div><div class="post-content"><!-- toc -->
+<ul>
+<li><a href="#初始化">初始化</a></li>
+<li><a href="#基本流程">基本流程</a></li>
+<li><a href="#基本概念">基本概念</a></li>
+<li><a href="#时光机">时光机</a></li>
+<li><a href="#错误解决">错误解决</a></li>
+<li><a href="#快捷命令代替手工撤销">快捷命令代替手工撤销</a></li>
+<li><a href="#分支操作">分支操作</a></li>
+<li><a href="#https-vs-ssh">https vs ssh</a></li>
+<li><a href="#仓库迁移">仓库迁移</a></li>
+<li><a href="#git提交后出现nano界面解决方法">git提交后出现nano界面,解决方法</a></li>
+<li><a href="#tips">TIPS</a></li>
+</ul>
+<!-- tocstop -->
+<h2><span id="初始化">初始化</span></h2><ol>
+<li><p>配置</p>
+ <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ git config --global user.name <span class="string">"Your Name"</span></span><br><span class="line">$ git config --global user.email <span class="string">"email@example.com"</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>替换npm源为淘宝镜像</p>
+<p> <code>npm config set registry https://registry.npm.taobao.org</code></p>
+<blockquote>
+<p>检测是否成功<br>// 配置后可通过下面方式来验证是否成功<br><code>npm config get registry</code><br>// 或<br><code>npm info express</code></p>
+</blockquote>
+</li>
+<li><p>创建仓库</p>
+<ul>
+<li><p>if (想建一个空的本地仓库):</p>
+  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">// 想建一个空的本地仓库</span><br><span class="line">$ mkdir learngit</span><br><span class="line">$ <span class="built_in">cd</span> learngit</span><br><span class="line">$ <span class="built_in">pwd</span>(作用: 显示当前目录)</span><br><span class="line">/Users/michael/learngit</span><br><span class="line">// 如果你没有看到.git目录，那是因为这个目录默认是隐藏的，用ls -ah命令就可以看见。</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>else</p>
+  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git init</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p>远程仓库</p>
+<blockquote>
+<p>为什么GitHub需要SSH Key呢？因为GitHub需要识别出你推送的提交确实是你推送的，而不是别人冒充的，而Git支持SSH协议，所以，GitHub只要知道了你的公钥，就可以确认只有你自己才能推送。<br>涉及到push 的权限问题, 公钥不在github仓库配置里就不行</p>
+</blockquote>
+<ul>
+<li>你的本地Git仓库和GitHub仓库之间的传输是通过SSH加密的<ol>
+<li>创建SSH Key(除非在用户主目录下，看看有没有.ssh目录，如果有，再看看这个目录下有没有<code>id_rsa</code>和<code>id_rsa.pub</code>这两个文件)： <code>$ ssh-keygen -t rsa -C &quot;youremail@example.com&quot;</code></li>
+<li>登陆GitHub，打开“Account settings”，“SSH Keys”页面：，点“Add SSH key”，填上任意Title，在Key文本框里粘贴id_rsa.pub文件的内容</li>
+</ol>
+</li>
+</ul>
+</li>
+<li><p>链接远程仓库(先有本地库，后有远程库的时候)</p>
+<ol>
+<li>网站建仓库</li>
+<li><code>$ git remote add origin git@github.com:michaelliao/learngit.git</code><br>添加后，远程库的名字就是origin<br><code>git push -u origin master</code><br>我们第一次推送master分支时，加上了-u参数，Git不但会把本地的master分支内容推送的远程新的master分支，还会把本地的master分支和远程的master分支关联起来，在以后的推送或者拉取时就可以简化命令</li>
+</ol>
+</li>
+<li><p>SSH警告<br>当你第一次使用Git的clone或者push命令连接GitHub时，会得到一个警告：</p>
+<blockquote>
+<p>The authenticity of host ‘github.com (xx.xx.xx.xx)’ can’t be established.<br>RSA key fingerprint is xx.xx.xx.xx.xx.<br>Are you sure you want to continue connecting (yes/no)?</p>
+</blockquote>
+<p>这是因为Git使用SSH连接，而SSH连接在第一次验证GitHub服务器的Key时，需要你确认GitHub的Key的指纹信息是否真的来自GitHub的服务器，输入yes回车即可。</p>
+<p>Git会输出一个警告，告诉你已经把GitHub的Key添加到本机的一个信任列表里了：</p>
+<p>Warning: Permanently added ‘github.com’ (RSA) to the list of known hosts.<br>这个警告只会出现一次，后面的操作就不会有任何警告了。</p>
+<p>如果你实在担心有人冒充GitHub服务器，输入yes前可以对照GitHub的RSA Key的指纹信息是否与SSH连接给出的一致。</p>
+</li>
+</ol>
+<h2><span id="基本流程">基本流程</span></h2><ol>
+<li><p>it remote add origin 本地库关联远程仓库</p>
+<p> 把本地库的内容推送到远程，用git push命令，实际上是把当前分支master推送到远程</p>
+<p> 从现在起，只要本地作了提交，就可以通过命令：<code>$ git push origin master</code></p>
+<p> 如果要推送其他分支，比如dev，就改成：<code>$ git push origin dev</code></p>
+</li>
+<li><p>你的小伙伴要在dev分支上开发，就必须创建远程origin的dev分支到本地，于是他用这个命令创建本地dev分支：<code>$ git checkout -b dev origin/dev</code></p>
+</li>
+</ol>
+<ol>
+<li><p>本地修改后</p>
+<p> <code>git status =&gt; git diff 可以看到底是那些修改</code></p>
+</li>
+<li><p>现在，他就可以在dev上继续修改，然后，时不时地把dev分支push到远程：</p>
+<ul>
+<li><code>$ git commit -m &quot;add /usr/bin/env&quot;</code></li>
+<li><code>$ git push origin dev</code></li>
+</ul>
+</li>
+<li><p>冲突</p>
+<p><code>$ git add readme.txt</code><br><code>$ git commit -m &quot;conflict fixed&quot;</code><br><code>[master cf810e4] conflict fixed</code></p>
+</li>
+<li><p>最后，删除feature1分支：</p>
+<p><code>$ git branch -d feature1</code></p>
+</li>
+</ol>
+<ol>
+<li><p>LOG</p>
+<ol>
+<li><p>如果嫌输出信息太多，看得眼花缭乱的，可以试试加上–pretty=oneline参数：</p>
+<p> <code>$ git log --pretty=oneline</code></p>
+</li>
+</ol>
+</li>
+</ol>
+<h2><span id="基本概念">基本概念</span></h2><p><img src="/blog/2019/03/13/GIT常用速查/head.png" alt=""></p>
+<p>commit相当于一个存档,每当你觉得文件修改到一定程度的时候，就可以“保存一个快照”，这个快照在Git中被称为commit。一旦你把文件改乱了，或者误删了文件，还可以从最近的一个commit恢复，然后继续工作，而不是把几个月的工作成果全部丢失。</p>
+<p>用HEAD表示当前版本, 上一个<code>HEAD^</code>, 上100个<code>HEAD~100</code><br>本地的push和merge会形成<code>MERGE-HEAD(FETCH-HEAD)</code>, <code>HEAD（PUSH-HEAD)</code>这样的引用。HEAD代表本地最近成功push后形成的引用。MERGE-HEAD表示成功pull后形成的引用</p>
+<p><strong>HEAD指向当前分支, 当前分支指向提交</strong></p>
+<h2><span id="时光机">时光机</span></h2><ol>
+<li><p>git revert</p>
+<p> 场景: 如果要是 提交了以后，可以使用<code>git revert</code>还原已经提交的修改<br> 此次操作之前和之后的commit和history都会保留，并且把这次撤销作为一次最新的提交<br> <code>git revert HEAD</code> 撤销前一次 commit<br> <code>git revert HEAD^</code> 撤销前前一次 commit<br> <code>git revert commit-id</code> (撤销指定的版本，撤销也会作为一次提交进行保存） </p>
+<p> git revert是提交一个新的版本，将需要revert的版本的内容再反向修改回去，<strong>版本会递增</strong>，不影响之前提交的内容。</p>
+</li>
+<li><p>git reset</p>
+<ul>
+<li>git log查看提交历史记录</li>
+</ul>
+<ul>
+<li>HEAD指向的版本就是当前版本，因此，Git允许我们在版本的历史之间穿梭，使用命令git reset –hard commit_id。</li>
+<li>穿梭前，用git log可以查看提交历史，以便确定要回退到哪个版本。</li>
+<li><p>要重返未来，用git reflog查看命令历史，以便确定要回到未来的哪个版本。</p>
+<blockquote>
+<p><code>git reset --hard HEAD^(commitID也可以)</code><br><code>git push origin xxx --force(同步远程仓库)</code></p>
+</blockquote>
+</li>
+</ul>
+</li>
+<li><p><a href="http://gitbook.liuhui998.com/4_2.html" target="_blank" rel="noopener">git rebase</a></p>
+<ol>
+<li><p>Git删除中间某次commit</p>
+<ol>
+<li>首先git log查看提交记录，找到出错的前一笔提交的commit_id</li>
+<li>用命令git rebase -i commit_id ,查找提交记录</li>
+<li>将出错那笔提交的pick改为drop(丢弃)</li>
+<li><p>Esc，:wq</p>
+<p>(revert也可以, 但是会留一条记录)</p>
+</li>
+</ol>
+</li>
+</ol>
+</li>
+<li><p>发现拉错分支了, 出现了冲突, </p>
+<ol>
+<li><p>git reset –hard commitid(本地的push和merge会形成MERGE-HEAD(FETCH-HEAD), HEAD（PUSH-HEAD）这样的引用。HEAD代表本地最近成功push后形成的引用。MERGE-HEAD表示成功pull后形成的引用。)</p>
+</li>
+<li><p>–hard会冲掉工作区顺带暂存区</p>
+</li>
+</ol>
+</li>
+<li><p>git只合并某次commit</p>
+<blockquote>
+<p>使用场景：因开发两个分支并行开发，直接合并会造成很多问题。只是想合并某次改变的commit，就可以实用git cherry-pick<br>通过git log可以查看当前分支的所有提交的哈希值（ID）<br>切到需要合并的目标分支<br>运行 git cherry-pick 哈希值<br>如果遇到error，运行 git status查看 ummerged 下红色的文件路径，用编辑器打开，修改（寻找 === 标志， 上半是旧代码，下半是新代码，自己决定取舍）<br>完成所有冲突文件修改后，git add 对应文件<br>运行 git cherry-pick –continue 即完成。<br>注意：这时会弹出 一段可能会很长的描述性文字，可以全部删除，改成自己要的文字，一般我是保留最上那行，跟之前的历史描述一致，方便查找。不删除也无所谓。然后保存退出即可。<br>这个界面是vi的编辑界面，一次删除多行的命令为 “数字X+dd” 即可删除当前光标一下的X行内容。</p>
+</blockquote>
+</li>
+</ol>
+<h2><span id="错误解决">错误解决</span></h2><ol>
+<li><p>cannot lock ref</p>
+<ul>
+<li><p>错误描述</p>
+<blockquote>
+<p>git pull的时候<br>error: cannot lock ref ‘refs/remotes/origin/dev’: ref refs/remotes/origin/dev is at 19070aed6873f8d58f35e4631272b59f13927a1c but expected 8a5b3bda0778070bd6b92123556475c9484e04b8From 120.26.77.241:yourWorkspace/yourProject</p>
+</blockquote>
+</li>
+<li><p>解决办法: </p>
+<blockquote>
+<p>当时是又执行了一遍命令好的<br>网上推荐的方法:<br>rm .git/refs/remotes/origin/dev</p>
+<p>git fetch</p>
+</blockquote>
+</li>
+</ul>
+</li>
+<li><p>无法push</p>
+<ul>
+<li><a href="https://www.webmaster.me/uncategorized/add-multiple-ssh-keys-on-github.html" target="_blank" rel="noopener">在GitHub多个帐号上添加SSH公钥
+</a></li>
+<li><p><a href="https://www.jianshu.com/p/be58fa27a704" target="_blank" rel="noopener">添加公钥以后, 依然无法push</a>去到<code>cd /Users/Johnson/.ssh</code>然后执行<code>ssh-add id_rsa2(公钥名)</code> 就可以了</p>
+</li>
+<li><p>若执行<code>ssh-add /path/to/xxx.pem</code>是出现这个错误:<strong>Could not open a connection to your authentication agent</strong>，则先执行如下命令即可：<code>ssh-agent bash</code></p>
+</li>
+</ul>
+</li>
+<li><p>查看git配置</p>
+</li>
+</ol>
+<p>config 配置指令</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git config --global user.name <span class="string">"myname"</span></span><br><span class="line">git config --global user.email  <span class="string">"test@gmail.com"</span></span><br></pre></td></tr></table></figure>
+<p>config 配置有system级别 global（用户级别） 和local（当前仓库）三个 设置先从system-》global-》local  底层配置会覆盖顶层配置 分别使用–system/global/local 可以定位到配置文件</p>
+<p>查看系统config<code>git config --system --list</code><br>查看当前用户（global）配置<code>git config --global  --list</code><br>查看当前仓库配置信息<code>git config --local  --list</code></p>
+<h2><span id="快捷命令代替手工撤销">快捷命令代替手工撤销</span></h2><ol>
+<li><p>批量删除branch中新加的文件(untracked files)</p>
+<blockquote>
+<p>首先确认要删除的文件<code>git clean -fd -n</code></p>
+<p>如果以上命令给出的文件列表是你想删除的， 那么接下来执行</p>
+<p><code>git clean -f -d</code>或者<code>git clean -fd</code>就可以了。</p>
+<p>其中-f表示文件-d表示目录, 如果还要删除.gitignore中的文件那么再加上-x (-x对我来说没用）</p>
+<p>如果git submodule中也存在需要删除的文件那么需要再加个-f， 变成git clean -dff</p>
+</blockquote>
+</li>
+<li><p>放弃修改<br> git checkout – file可以丢弃工作区的修改：  (总之，就是让这个文件回到最近一次git commit或git add时的状态。)</p>
+<p> git reset命令既可以回退版本，也可以把暂存区的修改回退到工作区(撤销add)。当我们用HEAD时，表示最新的版本。</p>
+<p> 一是确实要从版本库中删除该文件，那就用命令git rm删掉，并且git commit</p>
+</li>
+<li><a href="https://www.jianshu.com/p/e9b6f92ea07c" target="_blank" rel="noopener">Git之使用命令行合并多次提交</a></li>
+</ol>
+<h2><span id="分支操作">分支操作</span></h2><p>Git鼓励大量使用分支：</p>
+<ol>
+<li>查看分支：<code>git branch</code>   </li>
+<li>创建分支：<code>git branch &lt;name&gt;</code>   </li>
+<li>切换分支：<code>git checkout &lt;name&gt;</code>   </li>
+<li>创建+切换分支：<code>git checkout -b &lt;name&gt;</code>   </li>
+<li>合并某分支到当前分支：<code>git merge &lt;name&gt;</code>  <img src="/blog/2019/03/13/GIT常用速查/gitmerge--no-ff.png" alt="">   </li>
+<li>删除分支：<code>git branch -d &lt;name&gt;</code></li>
+<li>分支重命名<ol>
+<li>本地分支重命名<code>Git branch -m oldbranchname newbranchname</code></li>
+<li>远程分支重命名 (假设本地分支和远程对应分支名称相同)<ol>
+<li>重命名远程分支对应的本地分支: <strong>git branch -m old-local-branch-name new-local-branch-name</strong></li>
+<li>删除远程分支: <strong>git push origin :old-local-branch-name</strong></li>
+<li>上传新命名的本地分支: <strong>git push origin new-local-branch-name: new-local-branch-name</strong></li>
+</ol>
+</li>
+</ol>
+</li>
+</ol>
+<h2><span id="https-vs-ssh">https vs ssh</span></h2><p><code>git config --global credential.helper store</code>记住密码， 防止每次输入用户名密码</p>
+<h2><span id="仓库迁移">仓库迁移</span></h2><p>度娘了一堆git仓库迁移的内容，一个个都比较麻烦，而且本地下了代码，还要删去库地址，再切换到新库的地址上传。</p>
+<p>一般这种操作都只是master分支，其他分支还要一个一个来，后来在51CTO上找了一个文章，简单明了，一下就全搞定了。</p>
+<p>包括所有的分支、标签、日志，一个不少。</p>
+<p>当然账号对应的事就没办法了。</p>
+<p>四行命令：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> --mirror &lt;URL to my OLD repo location&gt;</span><br><span class="line"><span class="built_in">cd</span> &lt;New directory <span class="built_in">where</span> your OLD repo was cloned&gt;</span><br><span class="line">git remote <span class="built_in">set</span>-url origin &lt;URL to my NEW repo location&gt;</span><br><span class="line">git push -f origin</span><br></pre></td></tr></table></figure>
+<h2><span id="git提交后出现nano界面解决方法">git提交后出现nano界面,解决方法</span></h2><p>这个是使用nano进行编辑提交的页面，退出方法为：<br>Ctrl + X然后输入y再然后回车，就可以退出了<br>如果你想把默认编辑器换成别的：<br>方法一、在GIT配置中设置 core.editor: git config –global core.editor “vim”</p>
+<p>方法二、编辑~/.gitconfig文件。在core中添加editor = vim。如此以后在使用git的时候就自动使用vim作为编辑器</p>
+<h2><span id="tips">TIPS</span></h2><ol>
+<li><p>美化log</p>
+<p> <code>git log --oneline --decorate --graph</code></p>
+</li>
+<li><p>远程tag的重命名</p>
+<ol>
+<li><p>第一步: </p>
+<ul>
+<li><p>方法一: 本地把老tag push到远程新tag然后清除远程老tag 最后  清除本地老tag</p>
+  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git push origin &lt;refs/tags/old-tag&gt;:&lt;refs/tags/new-tag&gt; :&lt;refs/tags/old-tag&gt; &amp;&amp; git tag -d &lt;old-tag&gt;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+</ol>
+</li>
+</ol>
+<pre><code>    - 方法二: 本地重命名 =&gt; 删除远程tag =&gt; push本地tag
+
+        <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">git tag new old</span><br><span class="line">git tag -d old</span><br><span class="line">git push origin :refs/tags/old</span><br><span class="line">git push --tags</span><br></pre></td></tr></table></figure>
+
+2. 第二步:拉到错误tag的同事执行`git pull --prune --tags`清除本地和远程相比多余的tag
+</code></pre><ol>
+<li><p>git同步远程已删除的分支和删除本地多余的分支</p>
+<ul>
+<li>删除本地多余远程分支<code>git remote show origin</code> =&gt; <code>git remote prune origin</code></li>
+<li>删除本地多余分支<code>git branch -D xxx</code></li>
+</ul>
+</li>
+</ol>
+<ol>
+<li><p>批量删除本地分支<br> <code>git branch |grep &#39;branchName&#39; |xargs git branch -D</code><br> 这是通过 shell 管道命令来实现的批量删除分支的功能</p>
+<blockquote>
+<p>git branch 输出当前分支列表<br>grep 是对 git branch 的输出结果进行匹配，匹配值当然就是 branchName<br>xargs 的作用是将参数列表转换成小块分段传递给其他命令</p>
+</blockquote>
+<p> 因此，这条命令的意思就是:</p>
+<p> <code>从分支列表中匹配到指定分支，然后一个一个(分成小块)传递给删除分支的命令，最后进行删除。</code></p>
+</li>
+</ol>
+</div><div class="tags"><a href="/blog/tags/Git/"><i class="fa fa-tag"></i>Git</a></div><div class="post-nav"><a class="pre" href="/blog/2019/03/13/你不知道的markdown/">你不知道的markdown</a><a class="next" href="/blog/2019/03/13/职场潜规则/">职场潜规则</a></div></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><form class="search-form" action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank"><input type="text" name="q" maxlength="20" placeholder="Search"/><input type="hidden" name="sitesearch" value="https://aj1219.github.io/blog"/></form></div><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> 分类</i></div></div><div class="widget"><div class="widget-title"><i class="fa fa-star-o"> 标签</i></div><div class="tagcloud"><a href="/blog/tags/Node/" style="font-size: 15px;">Node</a> <a href="/blog/tags/DOM/" style="font-size: 15px;">DOM</a> <a href="/blog/tags/JavaScript/" style="font-size: 15px;">JavaScript</a> <a href="/blog/tags/前端/" style="font-size: 15px;">前端</a> <a href="/blog/tags/模块化/" style="font-size: 15px;">模块化</a> <a href="/blog/tags/JQuery/" style="font-size: 15px;">JQuery</a> <a href="/blog/tags/Linux/" style="font-size: 15px;">Linux</a> <a href="/blog/tags/Go/" style="font-size: 15px;">Go</a> <a href="/blog/tags/Git/" style="font-size: 15px;">Git</a> <a href="/blog/tags/Nginx/" style="font-size: 15px;">Nginx</a> <a href="/blog/tags/TCP/" style="font-size: 15px;">TCP</a> <a href="/blog/tags/个人成长/" style="font-size: 15px;">个人成长</a> <a href="/blog/tags/面试/" style="font-size: 15px;">面试</a> <a href="/blog/tags/Aha/" style="font-size: 15px;">Aha</a> <a href="/blog/tags/CSS3/" style="font-size: 15px;">CSS3</a> <a href="/blog/tags/技术参考/" style="font-size: 15px;">技术参考</a> <a href="/blog/tags/管理/" style="font-size: 15px;">管理</a> <a href="/blog/tags/go/" style="font-size: 15px;">go</a> <a href="/blog/tags/编程作业/" style="font-size: 15px;">编程作业</a> <a href="/blog/tags/电子书/" style="font-size: 15px;">电子书</a> <a href="/blog/tags/Hexo/" style="font-size: 15px;">Hexo</a> <a href="/blog/tags/https/" style="font-size: 15px;">https</a> <a href="/blog/tags/CSS/" style="font-size: 15px;">CSS</a> <a href="/blog/tags/HTML/" style="font-size: 15px;">HTML</a> <a href="/blog/tags/React/" style="font-size: 15px;">React</a> <a href="/blog/tags/SSH/" style="font-size: 15px;">SSH</a> <a href="/blog/tags/shell/" style="font-size: 15px;">shell</a> <a href="/blog/tags/Unix/" style="font-size: 15px;">Unix</a> <a href="/blog/tags/Vim/" style="font-size: 15px;">Vim</a> <a href="/blog/tags/计算机基础知识/" style="font-size: 15px;">计算机基础知识</a> <a href="/blog/tags/markdown/" style="font-size: 15px;">markdown</a> <a href="/blog/tags/心理学/" style="font-size: 15px;">心理学</a> <a href="/blog/tags/网络/" style="font-size: 15px;">网络</a> <a href="/blog/tags/坑/" style="font-size: 15px;">坑</a> <a href="/blog/tags/Mac/" style="font-size: 15px;">Mac</a> <a href="/blog/tags/Apache/" style="font-size: 15px;">Apache</a> <a href="/blog/tags/生活/" style="font-size: 15px;">生活</a> <a href="/blog/tags/小程序/" style="font-size: 15px;">小程序</a> <a href="/blog/tags/微信小程序/" style="font-size: 15px;">微信小程序</a> <a href="/blog/tags/兼容性/" style="font-size: 15px;">兼容性</a> <a href="/blog/tags/DNS/" style="font-size: 15px;">DNS</a> <a href="/blog/tags/Ping/" style="font-size: 15px;">Ping</a> <a href="/blog/tags/逻辑/" style="font-size: 15px;">逻辑</a> <a href="/blog/tags/读书笔记/" style="font-size: 15px;">读书笔记</a> <a href="/blog/tags/redux/" style="font-size: 15px;">redux</a> <a href="/blog/tags/代码规范/" style="font-size: 15px;">代码规范</a> <a href="/blog/tags/webpack3/" style="font-size: 15px;">webpack3</a></div></div><div class="widget"><div class="widget-title"><i class="fa fa-file-o"> 最近文章</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/blog/2021/04/09/物理像素、逻辑像素、CSS像素、PPI、设备像素比是什么/">物理像素、逻辑像素、CSS像素、PPI、设备像素比是什么</a></li><li class="post-list-item"><a class="post-list-link" href="/blog/2020/04/08/重新定义管理/">重新定义管理</a></li><li class="post-list-item"><a class="post-list-link" href="/blog/2020/03/18/OKR黄勇笔记笔记/">OKR黄勇笔记笔记</a></li><li class="post-list-item"><a class="post-list-link" href="/blog/2020/03/18/自定义角色感/">自定义角色感</a></li><li class="post-list-item"><a class="post-list-link" href="/blog/2020/01/06/hello-Hexo/">Hello Hexo</a></li><li class="post-list-item"><a class="post-list-link" href="/blog/2019/12/25/Linux入门/">Linux入门</a></li><li class="post-list-item"><a class="post-list-link" href="/blog/2019/12/25/Nginx入门/">Nginx入门</a></li><li class="post-list-item"><a class="post-list-link" href="/blog/2019/11/13/GO第二课/">GO第二课</a></li><li class="post-list-item"><a class="post-list-link" href="/blog/2019/11/12/GO第一课/">GO第一课</a></li><li class="post-list-item"><a class="post-list-link" href="/blog/2019/09/10/gitbook导出电子书/">gitbook导出电子书</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-external-link"> 友情链接</i></div><ul></ul><a href="http://www.example1.com/" title="site-name1" target="_blank">site-name1</a><ul></ul><a href="http://www.example2.com/" title="site-name2" target="_blank">site-name2</a><ul></ul><a href="http://www.example3.com/" title="site-name3" target="_blank">site-name3</a></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2021 <a href="/blog/." rel="nofollow">Abel-Johnson's BLOG.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"> Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></div><a class="show" id="rocket" href="#top"></a><script type="text/javascript" src="/blog/js/totop.js?v=1.0.0" async></script><script type="text/javascript" src="//cdn.jsdelivr.net/gh/fancyapps/fancybox/dist/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/blog/js/fancybox.js?v=1.0.0" async></script><link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox/dist/jquery.fancybox.min.css"><script type="text/javascript" src="/js/copycode.js" successtext="复制成功!"></script><link rel="stylesheet" type="text/css" href="/css/copycode.css"><script type="text/javascript" src="/blog/js/codeblock-resizer.js?v=1.0.0"></script><script type="text/javascript" src="/blog/js/smartresize.js?v=1.0.0"></script></div></body></html>

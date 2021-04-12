@@ -1,0 +1,211 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description"><title>ES6 | Abel-Johnson's BLOG</title><link rel="stylesheet" type="text/css" href="/blog/css/style.css?v=1.0.0"><link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/normalize.css/normalize.min.css"><link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/purecss/build/pure-min.min.css"><link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/purecss/build/grids-responsive-min.css"><link rel="stylesheet" href="//cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//cdn.jsdelivr.net/npm/jquery/dist/jquery.min.js"></script><link rel="icon" mask="" sizes="any" href="/blog/favicon.ico"><link rel="Shortcut Icon" type="image/x-icon" href="/blog/favicon.ico"><link rel="apple-touch-icon" href="/blog/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/blog/apple-touch-icon.png"><script type="text/javascript" src="//cdn.jsdelivr.net/npm/clipboard/dist/clipboard.min.js"></script><script type="text/javascript" src="//cdn.jsdelivr.net/gh/codeseven/toastr/build/toastr.min.js"></script><link rel="stylesheet" href="//cdn.jsdelivr.net/gh/codeseven/toastr/build/toastr.min.css"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">ES6</h1><a id="logo" href="/blog/.">Abel-Johnson's BLOG</a><p class="description"></p></div><div id="nav-menu"><a class="current" href="/blog/."><i class="fa fa-home"> 首页</i></a><a href="/blog/archives/"><i class="fa fa-archive"> 归档</i></a><a href="/blog/about/"><i class="fa fa-user"> 关于</i></a><a href="/blog/atom.xml"><i class="fa fa-rss"> 订阅</i></a></div></div><div class="pure-g" id="layout"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">ES6</h1><div class="post-meta">2017-01-06</div><div class="post-content"><h2><span id="1-严格模式">1. <strong>严格模式</strong></span></h2><ul>
+<li>ES5的严格模式 <em>‘strict mode’</em></li>
+<li><p>进入方法    </p>
+  <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&lt;script&gt;</span><br><span class="line"><span class="meta">	'use strict'</span></span><br><span class="line">	<span class="comment">//整个script标签都会使用严格模式</span></span><br><span class="line">	a = <span class="number">10</span>;</span><br><span class="line">	<span class="comment">//会报错: a is not defined</span></span><br><span class="line">&lt;<span class="regexp">/script&gt;</span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<pre><code>也可以:
+
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line"><span class="meta">	'use strict'</span></span><br><span class="line">	<span class="comment">//只有函数作用域中使用严格模式</span></span><br><span class="line">&#125;)()</span><br></pre></td></tr></table></figure>
+</code></pre><ul>
+<li><p>一些规则</p>
+<ol>
+<li>首先,变量不声明就赋值,会报错</li>
+<li>直接调用函数,this指向<code>undefined</code>而不是<code>window</code></li>
+<li><p>delete 全局变量会报错</p>
+<blockquote>
+<pre><code>关于删除运算符delete
+    `var a = 1; delete a;//delete不能删除全局变量`
+    `var obj = {a:10}; delete obj.a;//可以删除对象上的属性`
+</code></pre></blockquote>
+</li>
+<li>函数形参不能重名function func(a, a, b)</li>
+<li>不能用arguments命名变量</li>
+<li>函数体中修改形参的值不会改变arguments的值(也即不会跟踪他的变化)</li>
+<li><p>关于函数声明:</p>
+<blockquote>
+<p>js里</p>
+<pre><code>函数在for或if语句里声明不会预解析提前,而变量一直可以
+</code></pre></blockquote>
+<p>代码示例  </p>
+ <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//'use strict'//正常模式会正常执行,打印 1</span></span><br><span class="line"><span class="meta">'use strict'</span><span class="comment">//会报错: Uncaught ReferenceError: a is not defined</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>(<span class="literal">true</span>) &#123;</span><br><span class="line">	<span class="function"><span class="keyword">function</span> <span class="title">a</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">		<span class="built_in">console</span>.log(<span class="number">1</span>);	</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line">a();</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+</li>
+</ul>
+<pre><code>8. 关于call
+    正常模式下: call()/call(undefined)/call(null)指向window
+    严格模式下: call()是指向undefined
+</code></pre><h2><span id="2-进入主题-es6">2. <strong>进入主题: ES6</strong></span></h2><ul>
+<li>函数中一旦使用了es6语法,默认已经进入严格模式,再使用<code>&#39;use strict&#39;</code>开启严格模式,就会报错</li>
+<li><p>声明变量方式: var / let / const</p>
+<ul>
+<li>var声明<ul>
+<li>的变量作用域由<strong>函数作用域</strong>确定,</li>
+<li>声明会提前,</li>
+<li>声明的全局变量<strong>会</strong>挂载在window上(不利于垃圾回收)</li>
+<li>可以重复声明</li>
+</ul>
+</li>
+<li><p>let声明</p>
+<ul>
+<li>的变量作用域由<strong>当前块级作用域</strong>确定,</li>
+<li>声明不会提前,</li>
+<li>声明的全局变量<strong>不会</strong>挂载在window上,</li>
+<li>不能重复声明,特殊的:  <code>🚫:var a = 1; let a = 1;</code></li>
+<li><p>暂存死区</p>
+<ul>
+<li>定义: 从块的开始到声明这段的部分</li>
+<li><p>运用:</p>
+  <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span>(<span class="keyword">let</span> i = <span class="number">0</span>; i&lt;<span class="number">5</span>; i++) &#123;</span><br><span class="line">	ele.onclick = <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">		alert(i);</span><br><span class="line">	&#125;	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>const(常量)声明</p>
+<ul>
+<li>定义: 定义后不能重新赋值</li>
+<li><p>特性跟let几乎一样(除了不能重新赋值)</p>
+<ul>
+<li>不能重复声明</li>
+<li>声明不会提前</li>
+</ul>
+</li>
+<li><p>命名建议采用<strong>全大写</strong></p>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>解构赋值:</p>
+<ul>
+<li><p>代码示例</p>
+  <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> arr = [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>]</span><br><span class="line"><span class="keyword">let</span> [,a,b,c] = arr;</span><br><span class="line"><span class="built_in">console</span>.log(a,b,c)<span class="comment">//2,3,4</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> [a,b,c,d,e,f=<span class="number">100</span>]<span class="comment">//f不传值的默认值是100</span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+</ul>
+<pre><code>函数里的用法:
+
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">ab</span>(<span class="params">[a,b,c=<span class="number">100</span>]</span>) </span>&#123;</span><br><span class="line">	<span class="built_in">console</span>.log(a,b,c)</span><br><span class="line">&#125;</span><br><span class="line">ab([<span class="number">1</span>, <span class="number">2</span>]);</span><br></pre></td></tr></table></figure>
+
+
+对象里的用法:  
+
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">obj=&#123;<span class="attr">aa</span>:<span class="number">1</span>,<span class="attr">b</span>:<span class="number">2</span>&#125;   </span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> &#123;aa,b&#125;=obj   <span class="comment">//aa,b=&gt; 1,2  </span></span><br><span class="line"><span class="keyword">let</span> &#123;<span class="attr">aa</span>:a(修改名),b&#125;=obj   <span class="comment">//a,b=&gt; 1,2  </span></span><br><span class="line"><span class="comment">//但是aa=&gt;not defined</span></span><br></pre></td></tr></table></figure>
+</code></pre><ul>
+<li>模块化:<blockquote>
+<p> Number部分:  </p>
+<pre><code>Number.isNaN();  
+Number.parseInt();  
+Number.parseFloat();  
+Number.isFinite();  
+Number.inTeger();  
+</code></pre><p>Math部分:<br> Math.trunc();直接去掉小数点后的内容<br> Math.sign();会返回: 1 -1 0 -0 NaN 五种值</p>
+<p>数组部分:<br>Array.from();<br>Array.of()将一组参数转成数组<br>arr.keys() 返回数组的遍历器对象  [<em>for(let key of arr.keys())可以遍历数组的key值</em>]<br>arr.entries()返回数组的遍历器对象[可以用for of遍历每组键值对]<br>arr.find(回调函数,this的指向)<br>arr.findIndex()<br>arr.fill(arg1,arg2…)拿这些参数去填充<br>arr.forEach(function(item){})</p>
+<p>Object部分:<br>Object.keys(obj)//得到对象的key值组成的数组<br>Object.values(obj)//得到对象的value值组成的数组<br>Object.entries(obj)//得到对象的key值组成的数组<br>Object.is(0,-0)/Object.is(NaN,NaN)//用来比较两个值是否相同 =&gt; 输出: false/true//<strong>但是*</strong>[[0===-0/NaN === NaN =&gt; true/false]]<em><br>Object.assign(target[,souce1,souce2…])把这些source对象扩展到target对象上 //与jquery中extend方法的区别: extend可以选择深度克隆,但assign方法只能浅克隆<br>Object.getPrototypeOf(obj)//获取对象的原型对象<br>Object.setPrototypeOf(obj)//设置<em>*非内置数据类型</em></em>对象的原型对象<br>Object.defineProperty(obj, prop, descriptor)定义属性</p>
+</blockquote>
+</li>
+</ul>
+<ul>
+<li>for循环遍历数组或对象  <ul>
+<li>for(let <em>value</em> <strong>of</strong> arr) {}<br>//for of不能遍历<strong>没有**</strong>遍历器函数(iterator)**的对象 (一般对象 键值对是无序的,所以没有遍历器,就不能被for of 遍历)   <blockquote>
+<pre><code>关于遍历器:  
+任何数据类型只要有这个方法,就可以被遍历
+
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">&gt; 	<span class="built_in">Array</span>.prototype[<span class="built_in">Symbol</span>.iterator]= <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">&gt; 	里边大概是: </span><br><span class="line">&gt; 		<span class="keyword">var</span> index = <span class="number">0</span>;</span><br><span class="line">&gt; 		<span class="keyword">return</span> &#123;</span><br><span class="line">&gt; 			next: <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">&gt; 					<span class="keyword">return</span> index &lt; arr.length? &#123;</span><br><span class="line">&gt; 						value: <span class="keyword">this</span>[index++],</span><br><span class="line">&gt; 						done: <span class="literal">false</span></span><br><span class="line">&gt; 					&#125; : &#123;</span><br><span class="line">&gt; 						value: <span class="literal">undefined</span>,</span><br><span class="line">&gt; 						done: <span class="literal">true</span></span><br><span class="line">&gt; 					&#125;</span><br><span class="line">&gt; 				&#125;</span><br><span class="line">&gt; 			</span><br><span class="line">&gt; 		&#125;</span><br><span class="line">&gt; 	&#125;</span><br><span class="line">&gt; 	</span><br><span class="line">&gt; 	<span class="comment">//给Object手动添加遍历器</span></span><br><span class="line">&gt; 	<span class="built_in">Object</span>.prototype[<span class="built_in">Symbol</span>.iterator]= <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">&gt; 		<span class="keyword">var</span> keys = <span class="built_in">Object</span>.keys(<span class="keyword">this</span>) <span class="comment">//获取到对象的所有简直</span></span><br><span class="line">&gt; 		<span class="keyword">var</span> index = <span class="number">0</span>;</span><br><span class="line">&gt; 		<span class="keyword">var</span> self = <span class="keyword">this</span>; <span class="comment">//next里的this不指向对象</span></span><br><span class="line">&gt; 		<span class="keyword">return</span> &#123;</span><br><span class="line">&gt; 			next: <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">&gt; 				<span class="keyword">return</span> index &lt; keys.length? &#123;</span><br><span class="line">&gt;					value: self[keys[index++]],</span><br><span class="line">&gt; 					done: <span class="literal">false</span></span><br><span class="line">&gt; 				&#125; : &#123;</span><br><span class="line">&gt; 					value: <span class="literal">undefined</span>,</span><br><span class="line">&gt; 					done: <span class="literal">true</span></span><br><span class="line">&gt; 				&#125;</span><br><span class="line">&gt; 			&#125;</span><br><span class="line">&gt; 		&#125;</span><br><span class="line">&gt; 	&#125;</span><br><span class="line">&gt; 	</span><br><span class="line">&gt; 	</span><br><span class="line">&gt;</span><br></pre></td></tr></table></figure>
+</code></pre></blockquote>
+</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<pre><code>for of会自动的调用遍历器方法,返回一个对象后,调用next方法
+</code></pre></blockquote>
+<pre><code>*     for(let *key* **in** arr) {} 
+</code></pre><ul>
+<li><p>关于对象    </p>
+<ul>
+<li><p>对象键值可以用表达式,但一定要用方括号包起来,如<code>[&#39;a&#39;+1]: 1</code>也可以写成<code>[变量名]: 123</code>,  </p>
+<ul>
+<li>但是要<strong>注意</strong>,键值会被转成字符串,如[obj]: xxx中的键值会被转成<code>字符串格式的[Object object]</code></li>
+<li><strong><em>对象中的键名都是字符串</em></strong></li>
+</ul>
+</li>
+<li><p><code>Object.defineProperty(obj, prop, descriptor)</code>定义属性  </p>
+<ul>
+<li>关于第三个参数–描述符:数据属性(数据描述)/访问器属性(存取描述) <pre>
+{
+value: 该属性定义的值
+writable: 默认false,是否可以被重新赋值
+enumerable: 是否可以被枚举,默认false
+configurable: 是否可以重新描述(重新配置这个描述符对象)以及是否可以删除该属性,默认false
+}
+{
+get: function() {return "对应的属性值"},取值的时候会触发get函数
+set: function() {},设置的时候会触发set函数
+enumerable: 是否可以被枚举,默认false
+configurable: 是否可以重新描述(重新配置这个描述符对象)以及是否可以删除该属性,默认false
+}
+</pre></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>spread(扩展运算符)<ul>
+<li>var arr1 = [1,2];<br> var arr2 = [3,4];<br> var newArr = […arr1,…arr2]<br>  //[1,2,3,4]</li>
+<li>运用: 取最大值: Math.max.apply(null, arr); Math.max(…arr)/</li>
+<li>也可以把类数组(包括下面的Set数据结构也是一种类数组)转成数组,然后使用数组方法</li>
+</ul>
+</li>
+<li><p>函数</p>
+<ol>
+<li>默认参数: function(x,y=2) {}//设置参数y默认值为2,可以不传的参数要放在最后面,因为调用参数的时候,fn(1,,1)会报错  </li>
+<li>rest参数: function fn(a,…rt) =&gt; rt是一个数组,里边放着其他实参(相对于类型是<strong>类数组</strong>的arguments,是一个<strong>真正的</strong>数组)</li>
+<li><p>箭头函数: <code>var f = n =&gt; n+1</code>;</p>
+<ul>
+<li>等价于声明一个函数,参数是n,最后return n+1  </li>
+<li>复杂用法:<code>var f = (n,m) =&gt; {return n+m}</code>  </li>
+<li><p>关于this的指向: 箭头函数中this的指向是在定义的时候决定的,不是在定义的时候决定的,代码示例: </p>
+  <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">ele.onclick = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">	setInterval(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">		<span class="comment">//这里的this指向window</span></span><br><span class="line">	&#125;, <span class="number">1000</span>)</span><br><span class="line">	setInterval(<span class="function"><span class="params">()</span>=&gt;</span>&#123;</span><br><span class="line">		<span class="comment">//这里的this指向ele</span></span><br><span class="line">	&#125;, <span class="number">1000</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>箭头函数 不能当做构造函数,也不能使用arguments,(用<code>...rest</code>代替)</p>
+</li>
+</ul>
+</li>
+</ol>
+</li>
+</ul>
+<ul>
+<li><p>数据结构</p>
+<ul>
+<li>之前是[]和{}</li>
+<li>ES6新增了Set和Map<ul>
+<li>Set 类似数组打印出来是{1,2},但是成员的值都是唯一的,不允许有重复项<br>   代码: var set = new Set();<ol>
+<li>set.add(1) 通过add添加数据,重复添加相同的值是无效的  </li>
+<li>set.size 长度</li>
+<li>set.delete(4)</li>
+<li>set.has(4)</li>
+<li>set.clear()</li>
+<li>可以用作数组去重 var set = new Set([1,2,1,2,3,3])</li>
+</ol>
+</li>
+<li>Map 类似对象的键值对集合,但是键值不限于字符串,各种类型的值都可以<ul>
+<li>map.set(objKey, value)</li>
+<li>map.get(objKey)</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Promise对象: 异步编程的解决方案(三种状态: pending,resolve,reject)</p>
+<ol>
+<li>应用: 可以把异步ajax请求从原来的多层嵌套转换为<strong>扁平化</strong></li>
+<li>新建对象: var p = new Promise(function(resolve, reject){<br> resolve(…);想让他执行.then里成功的方法<br> reject(…);想让他执行.then里失败的方法<br>});</li>
+<li>p.then(function(…){成功的时候执行}, function(…){失败的时候执行}) 但这种方法不提倡,可读性不高<br>所以一般把失败的处理函数写成: .catch(…){失败时执行}</li>
+</ol>
+</li>
+</ul>
+<h3><span id="函数的length属性的含义是该函数预期传入的参数个数">函数的length属性的含义是，该函数预期传入的参数个数。</span></h3></div><div class="tags"><a href="/blog/tags/JavaScript/"><i class="fa fa-tag"></i>JavaScript</a><a href="/blog/tags/前端/"><i class="fa fa-tag"></i>前端</a></div><div class="post-nav"><a class="pre" href="/blog/2017/01/06/AJAX/">AJAX</a><a class="next" href="/blog/2017/01/06/inline-block元素与vertical-align的关系/">inline-block元素与vertical-align的关系</a></div></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><form class="search-form" action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank"><input type="text" name="q" maxlength="20" placeholder="Search"/><input type="hidden" name="sitesearch" value="https://aj1219.github.io/blog"/></form></div><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> 分类</i></div></div><div class="widget"><div class="widget-title"><i class="fa fa-star-o"> 标签</i></div><div class="tagcloud"><a href="/blog/tags/Node/" style="font-size: 15px;">Node</a> <a href="/blog/tags/DOM/" style="font-size: 15px;">DOM</a> <a href="/blog/tags/JavaScript/" style="font-size: 15px;">JavaScript</a> <a href="/blog/tags/前端/" style="font-size: 15px;">前端</a> <a href="/blog/tags/模块化/" style="font-size: 15px;">模块化</a> <a href="/blog/tags/JQuery/" style="font-size: 15px;">JQuery</a> <a href="/blog/tags/Linux/" style="font-size: 15px;">Linux</a> <a href="/blog/tags/Go/" style="font-size: 15px;">Go</a> <a href="/blog/tags/Git/" style="font-size: 15px;">Git</a> <a href="/blog/tags/Nginx/" style="font-size: 15px;">Nginx</a> <a href="/blog/tags/TCP/" style="font-size: 15px;">TCP</a> <a href="/blog/tags/个人成长/" style="font-size: 15px;">个人成长</a> <a href="/blog/tags/面试/" style="font-size: 15px;">面试</a> <a href="/blog/tags/Aha/" style="font-size: 15px;">Aha</a> <a href="/blog/tags/CSS3/" style="font-size: 15px;">CSS3</a> <a href="/blog/tags/技术参考/" style="font-size: 15px;">技术参考</a> <a href="/blog/tags/管理/" style="font-size: 15px;">管理</a> <a href="/blog/tags/go/" style="font-size: 15px;">go</a> <a href="/blog/tags/编程作业/" style="font-size: 15px;">编程作业</a> <a href="/blog/tags/电子书/" style="font-size: 15px;">电子书</a> <a href="/blog/tags/Hexo/" style="font-size: 15px;">Hexo</a> <a href="/blog/tags/https/" style="font-size: 15px;">https</a> <a href="/blog/tags/CSS/" style="font-size: 15px;">CSS</a> <a href="/blog/tags/HTML/" style="font-size: 15px;">HTML</a> <a href="/blog/tags/React/" style="font-size: 15px;">React</a> <a href="/blog/tags/SSH/" style="font-size: 15px;">SSH</a> <a href="/blog/tags/shell/" style="font-size: 15px;">shell</a> <a href="/blog/tags/Unix/" style="font-size: 15px;">Unix</a> <a href="/blog/tags/Vim/" style="font-size: 15px;">Vim</a> <a href="/blog/tags/计算机基础知识/" style="font-size: 15px;">计算机基础知识</a> <a href="/blog/tags/markdown/" style="font-size: 15px;">markdown</a> <a href="/blog/tags/心理学/" style="font-size: 15px;">心理学</a> <a href="/blog/tags/网络/" style="font-size: 15px;">网络</a> <a href="/blog/tags/坑/" style="font-size: 15px;">坑</a> <a href="/blog/tags/Mac/" style="font-size: 15px;">Mac</a> <a href="/blog/tags/Apache/" style="font-size: 15px;">Apache</a> <a href="/blog/tags/生活/" style="font-size: 15px;">生活</a> <a href="/blog/tags/小程序/" style="font-size: 15px;">小程序</a> <a href="/blog/tags/微信小程序/" style="font-size: 15px;">微信小程序</a> <a href="/blog/tags/兼容性/" style="font-size: 15px;">兼容性</a> <a href="/blog/tags/DNS/" style="font-size: 15px;">DNS</a> <a href="/blog/tags/Ping/" style="font-size: 15px;">Ping</a> <a href="/blog/tags/逻辑/" style="font-size: 15px;">逻辑</a> <a href="/blog/tags/读书笔记/" style="font-size: 15px;">读书笔记</a> <a href="/blog/tags/redux/" style="font-size: 15px;">redux</a> <a href="/blog/tags/代码规范/" style="font-size: 15px;">代码规范</a> <a href="/blog/tags/webpack3/" style="font-size: 15px;">webpack3</a></div></div><div class="widget"><div class="widget-title"><i class="fa fa-file-o"> 最近文章</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/blog/2021/04/09/物理像素、逻辑像素、CSS像素、PPI、设备像素比是什么/">物理像素、逻辑像素、CSS像素、PPI、设备像素比是什么</a></li><li class="post-list-item"><a class="post-list-link" href="/blog/2020/04/08/重新定义管理/">重新定义管理</a></li><li class="post-list-item"><a class="post-list-link" href="/blog/2020/03/18/OKR黄勇笔记笔记/">OKR黄勇笔记笔记</a></li><li class="post-list-item"><a class="post-list-link" href="/blog/2020/03/18/自定义角色感/">自定义角色感</a></li><li class="post-list-item"><a class="post-list-link" href="/blog/2020/01/06/hello-Hexo/">Hello Hexo</a></li><li class="post-list-item"><a class="post-list-link" href="/blog/2019/12/25/Linux入门/">Linux入门</a></li><li class="post-list-item"><a class="post-list-link" href="/blog/2019/12/25/Nginx入门/">Nginx入门</a></li><li class="post-list-item"><a class="post-list-link" href="/blog/2019/11/13/GO第二课/">GO第二课</a></li><li class="post-list-item"><a class="post-list-link" href="/blog/2019/11/12/GO第一课/">GO第一课</a></li><li class="post-list-item"><a class="post-list-link" href="/blog/2019/09/10/gitbook导出电子书/">gitbook导出电子书</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-external-link"> 友情链接</i></div><ul></ul><a href="http://www.example1.com/" title="site-name1" target="_blank">site-name1</a><ul></ul><a href="http://www.example2.com/" title="site-name2" target="_blank">site-name2</a><ul></ul><a href="http://www.example3.com/" title="site-name3" target="_blank">site-name3</a></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2021 <a href="/blog/." rel="nofollow">Abel-Johnson's BLOG.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"> Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></div><a class="show" id="rocket" href="#top"></a><script type="text/javascript" src="/blog/js/totop.js?v=1.0.0" async></script><script type="text/javascript" src="//cdn.jsdelivr.net/gh/fancyapps/fancybox/dist/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/blog/js/fancybox.js?v=1.0.0" async></script><link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox/dist/jquery.fancybox.min.css"><script type="text/javascript" src="/js/copycode.js" successtext="复制成功!"></script><link rel="stylesheet" type="text/css" href="/css/copycode.css"><script type="text/javascript" src="/blog/js/codeblock-resizer.js?v=1.0.0"></script><script type="text/javascript" src="/blog/js/smartresize.js?v=1.0.0"></script></div></body></html>
